@@ -36,10 +36,28 @@ public class ProductController {
         return "productList";
     }
 
-    // New endpoint to delete a product by its ID.
+    // delete a product by its ID
     @GetMapping("/delete/{productId}")
     public String deleteProduct(@PathVariable String productId) {
         service.delete(productId);
+        return "redirect:/product/list";
+    }
+
+    // display edit form
+    @GetMapping("/edit/{productId}")
+    public String editProductPage(@PathVariable String productId, Model model) {
+        Product product = service.findById(productId);
+        if (product == null) {
+            return "redirect:/product/list";
+        }
+        model.addAttribute("product", product);
+        return "editProduct";
+    }
+
+    // process the edit form submission
+    @PostMapping("/edit")
+    public String editProductPost(@ModelAttribute Product product, Model model) {
+        service.update(product);
         return "redirect:/product/list";
     }
 }
