@@ -67,4 +67,65 @@ class ProductRepositoryTest {
         assertFalse(productIterator.hasNext());
 
     }
+
+    // positive scenario for deleting a product
+    @Test
+    void testDeleteProductPositive() {
+        Product product = new Product();
+        product.setProductId("id-1234");
+        product.setProductName("Test Product");
+        product.setProductQuantity(50);
+        productRepository.create(product);
+
+        boolean deleted = productRepository.delete("id-1234");
+        assertTrue(deleted, "Product should be successfully deleted");
+
+        // verify product is no longer in the repository
+        Iterator<Product> iterator = productRepository.findAll();
+        while (iterator.hasNext()) {
+            Product p = iterator.next();
+            assertNotEquals("id-1234", p.getProductId());
+        }
+    }
+
+    // negative scenario for deleting a product
+    @Test
+    void testDeleteProductNegative() {
+        boolean deleted = productRepository.delete("non-existent-id");
+        assertFalse(deleted, "Deleting a non-existent product should return false");
+    }
+
+    // positive scenario for editing a product
+    @Test
+    void testUpdateProductPositive() {
+        Product product = new Product();
+        product.setProductId("id-5678");
+        product.setProductName("Original Product");
+        product.setProductQuantity(30);
+        productRepository.create(product);
+
+        //  create updated product with the same ID
+        Product updatedProduct = new Product();
+        updatedProduct.setProductId("id-5678");
+        updatedProduct.setProductName("Updated Product");
+        updatedProduct.setProductQuantity(45);
+
+        Product result = productRepository.update(updatedProduct);
+        assertNotNull(result, "Product update should return a non-null product for an existing product");
+        assertEquals("id-5678", result.getProductId());
+        assertEquals("Updated Product", result.getProductName());
+        assertEquals(45, result.getProductQuantity());
+    }
+
+    // negative scenario for updating a product
+    @Test
+    void testUpdateProductNegative() {
+        Product updatedProduct = new Product();
+        updatedProduct.setProductId("non-existent-id");
+        updatedProduct.setProductName("Non Existing");
+        updatedProduct.setProductQuantity(10);
+
+        Product result = productRepository.update(updatedProduct);
+        assertNull(result, "Product update should return null when the product does not exist");
+    }
 }
