@@ -19,6 +19,11 @@ class ProductRepositoryTest {
 
     @BeforeEach
     void setUp() {
+        /*
+
+         * No setup is needed here since @InjectMocks handles the ProductRepository
+
+         */
     }
 
     @Test
