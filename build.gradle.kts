@@ -9,6 +9,14 @@ plugins {
 group = "id.ac.ui.cs.advprog"
 version = "0.0.1-SNAPSHOT"
 
+sonar {
+    properties {
+        property("sonar.projectKey", "terserahdehh_eshop")
+        property("sonar.organization", "terserahdehh")
+        property("sonar.host.url", "https://sonarcloud.io")
+    }
+}
+
 java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(21))
@@ -70,10 +78,3 @@ tasks.withType<Test>().configureEach {
     useJUnitPlatform()
 }
 
-sonar {
-    properties {
-        property("sonar.projectKey", "skibidiyo_eshop")
-        property("sonar.organization", "skibidiyo")
-        property("sonar.host.url", "https://sonarcloud.io")
-    }
-}
