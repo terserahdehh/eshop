@@ -21,3 +21,16 @@ A better approach is to extract the common setup code into a base class or utili
 This makes the code cleaner, easier to maintain, and reduces the chance of errors.
 
 </Details>
+
+<Details>
+<Summary>Assignment 2</Summary>
+
+**Reflection**
+
+1. I fixed some code quality issues like removing unnecessary exception declarations, adding comments for empty methods, avoiding hardcoded version numbers, switching to constructor injection, and getting rid of deprecated annotations. 
+Some of the strategies I used were making sure the tests still worked after removing the extra throws declarations, checking empty methods and explaining why they were left empty, and etc.
+
+2. I think the current implementation meets the definition of Continuous Integration and Continuous Deployment. 
+The workflows automatically run tests, security checks, and code analysis on every branch push and pull request, which helps catch issues early. 
+Also, changes are automatically deployed to production when pushed to the main branch, ensuring that our app is always up to date and any bugs are quickly fixed.
+</Details>
