@@ -14,9 +14,12 @@ import java.util.List;
 public class ProductController {
 
     private static final String REDIRECT_PRODUCT_LIST = "redirect:/product/list";
+    private final ProductService service;
 
     @Autowired
-    private ProductService service;
+    public ProductController(ProductService service) {
+        this.service = service;
+    }
 
     @GetMapping("/create")
     public String createProductPage(Model model) {
@@ -38,14 +41,12 @@ public class ProductController {
         return "ProductList";
     }
 
-    // delete a product by its ID
     @GetMapping("/delete/{productId}")
     public String deleteProduct(@PathVariable String productId) {
         service.delete(productId);
         return REDIRECT_PRODUCT_LIST;
     }
 
-    // display edit form
     @GetMapping("/edit/{productId}")
     public String editProductPage(@PathVariable String productId, Model model) {
         Product product = service.findById(productId);
@@ -56,7 +57,6 @@ public class ProductController {
         return "EditProduct";
     }
 
-    // process the edit form submission
     @PostMapping("/edit")
     public String editProductPost(@ModelAttribute Product product, Model model) {
         service.update(product);

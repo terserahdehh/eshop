@@ -12,8 +12,12 @@ import java.util.List;
 @Service
 public class ProductServiceImpl implements ProductService {
 
+    private final ProductRepository productRepository;
+
     @Autowired
-    private ProductRepository productRepository;
+    public ProductServiceImpl(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
 
     @Override
     public Product create(Product product) {
@@ -28,19 +32,17 @@ public class ProductServiceImpl implements ProductService {
         productIterator.forEachRemaining(allProduct::add);
         return allProduct;
     }
-    // implementation of delete method
+
     @Override
     public boolean delete(String productId) {
         return productRepository.delete(productId);
     }
 
-    // find product by ID
     @Override
     public Product findById(String productId) {
         return productRepository.findById(productId);
     }
 
-    // update product
     @Override
     public Product update(Product product) {
         return productRepository.update(product);

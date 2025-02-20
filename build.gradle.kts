@@ -1,10 +1,11 @@
 plugins {
     java
     jacoco
-    id("org.sonarqube") version "6.0.1.5171"
-    id("org.springframework.boot") version "3.4.2"
-    id("io.spring.dependency-management") version "1.1.7"
+    id("org.sonarqube")
+    id("org.springframework.boot")
+    id("io.spring.dependency-management")
 }
+
 
 group = "id.ac.ui.cs.advprog"
 version = "0.0.1-SNAPSHOT"
