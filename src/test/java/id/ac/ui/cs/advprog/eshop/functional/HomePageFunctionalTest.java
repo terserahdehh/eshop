@@ -1,4 +1,4 @@
-package id. ac.ui.cs.advprog.eshop.functional;
+package id.ac.ui.cs.advprog.eshop.functional;
 
 import io.github.bonigarcia.seljup.SeleniumJupiter;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +20,6 @@ class HomePageFunctionalTest {
      * The port number assigned to the running application during test execution.
      * Set automatically during each test run by Spring Framework's test context.
      */
-
     @LocalServerPort
     private int serverPort;
     /**
@@ -37,7 +36,7 @@ class HomePageFunctionalTest {
     }
 
     @Test
-    void pageTitle_isCorrect(ChromeDriver driver) throws Exception {
+    void pageTitle_isCorrect(ChromeDriver driver) {
         // Exercise
         driver.get(baseUrl);
         String pageTitle = driver.getTitle();
@@ -47,14 +46,12 @@ class HomePageFunctionalTest {
     }
 
     @Test
-    void welcomeMessage_homePage_isCorrect(ChromeDriver driver) throws Exception {
+    void welcomeMessage_homePage_isCorrect(ChromeDriver driver) {
         // Exercise
         driver.get(baseUrl);
-        String welcomeMessage = driver.findElement(By.tagName("h3"))
-                .getText();
+        String welcomeMessage = driver.findElement(By.tagName("h3")).getText();
+
         // Verify
         assertEquals("Welcome", welcomeMessage);
-
     }
-
 }
