@@ -1,10 +1,14 @@
 rootProject.name = "eshop"
 
-pluginManagement {
-    plugins {
-        // Define plugin versions directly here
-        id("org.springframework.boot") version "3.4.2"
-        id("org.sonarqube") version "6.0.1.5171"
-        id("io.spring.dependency-management") version "1.1.7"
+dependencyResolutionManagement {
+    versionCatalogs {
+        create("libs") {
+            version("springBoot", "3.4.2")
+            version("dependencyManagement", "1.1.7")
+            version("sonarqube", "6.0.1.5171")
+            version("seleniumJava", "4.14.1")
+            version("seleniumJupiter", "5.0.1")
+            version("webdrivermanager", "5.6.3")
+        }
     }
 }
