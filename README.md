@@ -33,4 +33,5 @@ Some of the strategies I used were making sure the tests still worked after remo
 2. I think the current implementation meets the definition of Continuous Integration and Continuous Deployment. 
 The workflows automatically run tests, security checks, and code analysis on every branch push and pull request, which helps catch issues early. 
 Also, changes are automatically deployed to production when pushed to the main branch, ensuring that our app is always up to date and any bugs are quickly fixed.
+
 </Details>
