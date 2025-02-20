@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Iterator;
 
@@ -65,10 +64,9 @@ class ProductRepositoryTest {
         savedProduct = productIterator.next();
         assertEquals(product2.getProductId(), savedProduct.getProductId());
         assertFalse(productIterator.hasNext());
-
     }
 
-    // positive scenario for deleting a product
+    // Positive scenario for deleting a product
     @Test
     void testDeleteProductPositive() {
         Product product = new Product();
@@ -80,7 +78,7 @@ class ProductRepositoryTest {
         boolean deleted = productRepository.delete("id-1234");
         assertTrue(deleted, "Product should be successfully deleted");
 
-        // verify product is no longer in the repository
+        // Verify product is no longer in the repository
         Iterator<Product> iterator = productRepository.findAll();
         while (iterator.hasNext()) {
             Product p = iterator.next();
@@ -88,14 +86,14 @@ class ProductRepositoryTest {
         }
     }
 
-    // negative scenario for deleting a product
+    // Negative scenario for deleting a product
     @Test
     void testDeleteProductNegative() {
         boolean deleted = productRepository.delete("non-existent-id");
         assertFalse(deleted, "Deleting a non-existent product should return false");
     }
 
-    // positive scenario for editing a product
+    // Positive scenario for editing a product
     @Test
     void testUpdateProductPositive() {
         Product product = new Product();
@@ -104,7 +102,7 @@ class ProductRepositoryTest {
         product.setProductQuantity(30);
         productRepository.create(product);
 
-        //  create updated product with the same ID
+        // Create updated product with the same ID
         Product updatedProduct = new Product();
         updatedProduct.setProductId("id-5678");
         updatedProduct.setProductName("Updated Product");
@@ -117,7 +115,7 @@ class ProductRepositoryTest {
         assertEquals(45, result.getProductQuantity());
     }
 
-    // negative scenario for updating a product
+    // Negative scenario for updating a product (repository is empty)
     @Test
     void testUpdateProductNegative() {
         Product updatedProduct = new Product();
@@ -127,5 +125,89 @@ class ProductRepositoryTest {
 
         Product result = productRepository.update(updatedProduct);
         assertNull(result, "Product update should return null when the product does not exist");
+    }
+
+    // Additional test: create a product without an ID (auto-generates a UUID)
+    @Test
+    void testCreateProductWithoutId() {
+        Product product = new Product();
+        // No product id is set
+        product.setProductId(null);
+        product.setProductName("Product Without ID");
+        product.setProductQuantity(20);
+        Product savedProduct = productRepository.create(product);
+
+        // Assert that a UUID has been generated
+        assertNotNull(savedProduct.getProductId(), "A UUID should be generated for a null productId");
+        assertFalse(savedProduct.getProductId().isEmpty(), "Generated productId should not be empty");
+    }
+
+    // Additional test: create a product with an empty string ID (auto-generates a UUID)
+    @Test
+    void testCreateProductWithEmptyId() {
+        Product product = new Product();
+        product.setProductId("");
+        product.setProductName("Product with Empty ID");
+        product.setProductQuantity(10);
+        Product savedProduct = productRepository.create(product);
+
+        // Assert that a UUID has been generated
+        assertNotNull(savedProduct.getProductId(), "A UUID should be generated for an empty productId");
+        assertFalse(savedProduct.getProductId().isEmpty(), "Generated productId should not be empty");
+        assertNotEquals("", savedProduct.getProductId(), "Generated productId should not equal empty string");
+    }
+
+    // Additional test: findById positive scenario
+    @Test
+    void testFindByIdPositive() {
+        Product product = new Product();
+        product.setProductId("test-id-001");
+        product.setProductName("Test Product");
+        product.setProductQuantity(15);
+        productRepository.create(product);
+
+        Product foundProduct = productRepository.findById("test-id-001");
+        assertNotNull(foundProduct, "findById should return the product when it exists");
+        assertEquals("Test Product", foundProduct.getProductName());
+        assertEquals(15, foundProduct.getProductQuantity());
+    }
+
+    // Additional test: findById negative scenario (repository is empty)
+    @Test
+    void testFindByIdNegative() {
+        Product foundProduct = productRepository.findById("non-existent-id");
+        assertNull(foundProduct, "findById should return null for a non-existent product");
+    }
+
+    // Additional test: update product not found in a non-empty repository
+    @Test
+    void testUpdateProductNotFoundInNonEmptyRepository() {
+        Product product = new Product();
+        product.setProductId("id-1");
+        product.setProductName("Product 1");
+        product.setProductQuantity(10);
+        productRepository.create(product);
+
+        // Attempt to update a product with a different id "id-2"
+        Product updatedProduct = new Product();
+        updatedProduct.setProductId("id-2");
+        updatedProduct.setProductName("Updated Product");
+        updatedProduct.setProductQuantity(20);
+        Product result = productRepository.update(updatedProduct);
+        assertNull(result, "update should return null when product is not found even if repository is non-empty");
+    }
+
+    // Additional test: findById not found in a non-empty repository
+    @Test
+    void testFindByIdNotFoundInNonEmptyRepository() {
+        Product product = new Product();
+        product.setProductId("id-1");
+        product.setProductName("Product 1");
+        product.setProductQuantity(10);
+        productRepository.create(product);
+
+        // Try to find a product with an id that does not exist
+        Product result = productRepository.findById("id-2");
+        assertNull(result, "findById should return null when the product id is not found in a non-empty repository");
     }
 }
