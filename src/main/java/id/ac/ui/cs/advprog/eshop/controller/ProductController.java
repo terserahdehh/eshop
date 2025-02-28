@@ -118,5 +118,3 @@ class CarController extends ProductController {
     }
 
 }
-
-
