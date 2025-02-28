@@ -9,9 +9,10 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public class ProductRepository {
+public class ProductRepository implements IProductRepository {
     private List<Product> productData = new ArrayList<>();
 
+    @Override
     public Product create(Product product) {
         // generate uuid for products
         if (product.getProductId() == null || product.getProductId().isEmpty()) {
@@ -20,17 +21,19 @@ public class ProductRepository {
         productData.add(product);
         return product;
     }
-
+    @Override
     public Iterator<Product> findAll() {
         return productData.iterator();
     }
 
     // returns true if a product was found and removed
+    @Override
     public boolean delete(String productId) {
         return productData.removeIf(product -> product.getProductId().equals(productId));
     }
 
     // find a product by its ID
+    @Override
     public Product findById(String productId) {
         for (Product product : productData) {
             if (product.getProductId().equals(productId)) {
@@ -41,6 +44,7 @@ public class ProductRepository {
     }
 
     // update product
+    @Override
     public Product update(Product product) {
         for (int i = 0; i < productData.size(); i++) {
             if (productData.get(i).getProductId().equals(product.getProductId())) {
