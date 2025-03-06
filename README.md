@@ -39,6 +39,8 @@ Also, changes are automatically deployed to production when pushed to the main b
 <Details>
 <Summary>Assignment 3</Summary>
 
+Reflection
+
 1. - Single Responsibility Principle (SRP):
     I separated the request handling into controllers, business logic into services, and data access into repositories which makes the code more maintainable.
 
@@ -68,3 +70,16 @@ Also, changes are automatically deployed to production when pushed to the main b
 3. Not applying SOLID principles, including the Single Responsibility Principle, makes the code more difficult to modify and test. For example, if ProductServiceImpl uses a concrete ProductRepository instead of the IProductRepository interface, any change in the repository might break the service and complicate testing. 
 Likewise, if controllers depend on concrete services rather than interfaces, even minor updates in the service layer may force changes in the controllers, resulting in a less flexible and more error-prone system.
 </Details>
+
+<Details>
+<Summary>Assignment 4</Summary>
+
+Reflection
+
+1. I found the TDD flow quite useful because it made me think about test cases before writing code, which helped catch issues early. 
+However, I noticed I could improve by adding more negative and edge case tests to cover scenarios that I might have missed initially.
+2. I believe my tests mostly followed the F.I.R.S.T. principle because they run quickly, don't rely on each other, give the same results every time, and tell me when something's wrong. 
+However, I noticed some tests could be more isolated. Next time, I'll work on ensuring that each test strictly checks one functionality without relying on shared state.
+
+</Details>
+
