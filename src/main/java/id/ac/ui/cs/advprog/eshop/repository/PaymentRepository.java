@@ -5,10 +5,11 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class PaymentRepository {
-    private List<Payment> paymentData = new ArrayList<>();
+    private final List<Payment> paymentData = new ArrayList<>();
 
     public Payment save(Payment payment) {
         paymentData.add(payment);
@@ -16,12 +17,10 @@ public class PaymentRepository {
     }
 
     public Payment findById(String id) {
-        for (Payment payment : paymentData) {
-            if (payment.getId().equals(id)) {
-                return payment;
-            }
-        }
-        return null;
+        return paymentData.stream()
+                .filter(payment -> payment.getId().equals(id))
+                .findFirst()
+                .orElse(null);
     }
 
     public List<Payment> findAll() {
