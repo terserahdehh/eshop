@@ -9,21 +9,21 @@ import java.util.Map;
 @Getter
 public class Payment {
     String id;
-    PaymentMethod method;
+    String method;
     PaymentStatus status;
     private Map<String, String> paymentData;
 
-    public Payment(String id, PaymentMethod method, Map<String, String> paymentData) {
+    public Payment(String id, String method, Map<String, String> paymentData) {
         this.id = id;
         this.setMethod(method);
         this.status = PaymentStatus.CHECKING_PAYMENT;
         this.paymentData = paymentData;
 
-        if (method == PaymentMethod.CASH) {
+        if (method.equals(PaymentMethod.COD.name())) {
             if (!paymentData.containsKey("address") || !paymentData.containsKey("deliveryFee")) {
                 throw new IllegalArgumentException("Missing address or deliveryFee for CASH method");
             }
-        } else if (method == PaymentMethod.VOUCHER) {
+        } else if (method.equals(PaymentMethod.VOUCHER.name())) {
             String voucherCode = paymentData.get("VoucherCode");
             if (voucherCode == null
                     || voucherCode.length() != 16
@@ -36,7 +36,7 @@ public class Payment {
         }
     }
 
-    public Payment(String id, PaymentMethod method, PaymentStatus status, Map<String, String> paymentData) {
+    public Payment(String id, String method, PaymentStatus status, Map<String, String> paymentData) {
         this(id, method, paymentData);
         this.setStatus(status);
     }
@@ -49,8 +49,8 @@ public class Payment {
         }
     }
 
-    public void setMethod(PaymentMethod method) {
-        if (method == PaymentMethod.VOUCHER || method == PaymentMethod.CASH) {
+    public void setMethod(String method) {
+        if (method.equals(PaymentMethod.VOUCHER.name()) || method.equals(PaymentMethod.COD.name())) {
             this.method = method;
         } else {
             throw new IllegalArgumentException();

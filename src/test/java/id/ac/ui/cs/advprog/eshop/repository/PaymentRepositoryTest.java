@@ -1,17 +1,18 @@
 package id.ac.ui.cs.advprog.eshop.repository;
 
-import id.ac.ui.cs.advprog.eshop.model.Payment;
 import id.ac.ui.cs.advprog.eshop.enums.PaymentMethod;
-
+import id.ac.ui.cs.advprog.eshop.enums.PaymentStatus;
+import id.ac.ui.cs.advprog.eshop.model.Payment;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class PaymentRepositoryTest {
+class PaymentRepositoryTest {
+
     private PaymentRepository paymentRepository;
 
     @BeforeEach
@@ -20,42 +21,71 @@ public class PaymentRepositoryTest {
     }
 
     @Test
-    void testSavePayment() {
+    void testSaveVoucherPaymentSuccess() {
         Map<String, String> paymentData = new HashMap<>();
         paymentData.put("VoucherCode", "ESHOP1234IZY5678");
-        Payment payment = new Payment("1", PaymentMethod.VOUCHER, paymentData);
+        Payment payment = new Payment("1", PaymentMethod.VOUCHER.name(), paymentData);
+
         Payment savedPayment = paymentRepository.save(payment);
 
-        assertNotNull(savedPayment);
-        assertEquals("1", savedPayment.getId());
-        assertEquals(PaymentMethod.VOUCHER, savedPayment.getMethod());
-        assertEquals("ESHOP1234IZY5678", savedPayment.getPaymentData().get("VoucherCode"));
+        assertEquals(PaymentStatus.SUCCESS, savedPayment.getStatus());
     }
 
     @Test
-    void testFindById() {
+    void testSaveVoucherPaymentRejected() {
         Map<String, String> paymentData = new HashMap<>();
-        paymentData.put("VoucherCode", "ESHOP1234IZY5678");
-        Payment payment = new Payment("1", PaymentMethod.VOUCHER, paymentData);
-        paymentRepository.save(payment);
+        paymentData.put("VoucherCode", "INVALIDVOUCHER");
+        Payment payment = new Payment("2", PaymentMethod.VOUCHER.name(), paymentData);
 
-        Payment foundPayment = paymentRepository.findById("1");
-        assertNotNull(foundPayment);
-        assertEquals("1", foundPayment.getId());
+        Payment savedPayment = paymentRepository.save(payment);
+
+        assertEquals(PaymentStatus.REJECTED, savedPayment.getStatus());
     }
 
     @Test
-    void testFindAll() {
-        Map<String, String> paymentData1 = new HashMap<>();
-        paymentData1.put("VoucherCode", "ESHOP1234IZY5678");
-        Payment payment1 = new Payment("1", PaymentMethod.VOUCHER, paymentData1);
-        paymentRepository.save(payment1);
+    void testSaveCodPaymentSuccess() {
+        Map<String, String> paymentData = new HashMap<>();
+        paymentData.put("address", "123 Main St");
+        paymentData.put("deliveryFee", "10");
+        Payment payment = new Payment("3", PaymentMethod.COD.name(), paymentData);
 
-        Map<String, String> paymentData2 = new HashMap<>();
-        paymentData2.put("VoucherCode", "ESHOP8765XYZ4321");
-        Payment payment2 = new Payment("2", PaymentMethod.VOUCHER, paymentData2);
-        paymentRepository.save(payment2);
+        Payment savedPayment = paymentRepository.save(payment);
 
-        assertEquals(2, paymentRepository.findAll().size());
+        assertEquals(PaymentStatus.SUCCESS, savedPayment.getStatus());
+    }
+
+    @Test
+    void testSaveCodPaymentRejected() {
+        Map<String, String> paymentData = new HashMap<>();
+        paymentData.put("address", "");
+        paymentData.put("deliveryFee", "10");
+        Payment payment = new Payment("4", PaymentMethod.COD.name(), paymentData);
+
+        Payment savedPayment = paymentRepository.save(payment);
+
+        assertEquals(PaymentStatus.REJECTED, savedPayment.getStatus());
+    }
+
+    @Test
+    void testSaveCodPaymentNullAddress() {
+        Map<String, String> paymentData = new HashMap<>();
+        paymentData.put("address", null);
+        paymentData.put("deliveryFee", "10");
+        Payment payment = new Payment("5", PaymentMethod.COD.name(), paymentData);
+
+        Payment savedPayment = paymentRepository.save(payment);
+
+        assertEquals(PaymentStatus.REJECTED, savedPayment.getStatus());
+    }
+
+    @Test
+    void testSaveVoucherPaymentInvalidLength() {
+        Map<String, String> paymentData = new HashMap<>();
+        paymentData.put("VoucherCode", "ESHOP1234IZY567");
+        Payment payment = new Payment("6", PaymentMethod.VOUCHER.name(), paymentData);
+
+        Payment savedPayment = paymentRepository.save(payment);
+
+        assertEquals(PaymentStatus.REJECTED, savedPayment.getStatus());
     }
 }
