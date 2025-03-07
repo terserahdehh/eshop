@@ -1,80 +1,59 @@
 package id.ac.ui.cs.advprog.eshop.model;
 
+import id.ac.ui.cs.advprog.eshop.enums.PaymentMethod;
+import id.ac.ui.cs.advprog.eshop.enums.PaymentStatus;
 import lombok.Getter;
+
 import java.util.Map;
 
 @Getter
 public class Payment {
-    private String id;
-    private String method;
-    private String status;
+    String id;
+    PaymentMethod method;
+    PaymentStatus status;
     private Map<String, String> paymentData;
 
-    public Payment(String id, String method, Map<String, String> paymentData) {
+    public Payment(String id, PaymentMethod method, Map<String, String> paymentData) {
         this.id = id;
-        setMethod(method);
-        this.status = "CHECKING_PAYMENT";
+        this.setMethod(method);
+        this.status = PaymentStatus.CHECKING_PAYMENT;
         this.paymentData = paymentData;
 
-        switch (this.method) {
-            case "CASH":
-                if (!isCashDataValid(paymentData)) {
-                    throw new IllegalArgumentException("Missing or empty address/deliveryFee for CASH payment");
-                }
-                break;
-            case "VOUCHER":
-                String voucher = paymentData.get("VoucherCode");
-                if (voucher == null || voucher.length() != 16
-                        || !voucher.startsWith("ESHOP")
-                        || countDigits(voucher) != 8) {
-                    this.status = "REJECTED";
-                } else {
-                    this.status = "SUCCESS";
-                }
-                break;
-            default:
-                throw new IllegalArgumentException("Unsupported payment method: " + method);
-        }
-    }
-
-    public Payment(String id, String method, String status, Map<String, String> paymentData) {
-        this(id, method, paymentData);
-        setStatus(status);
-    }
-
-    public void setStatus(String status) {
-        if ("SUCCESS".equals(status) || "REJECTED".equals(status)) {
-            this.status = status;
-        } else {
-            throw new IllegalArgumentException("Invalid payment status: " + status);
-        }
-    }
-
-    public void setMethod(String method) {
-        if ("VOUCHER".equals(method) || "CASH".equals(method)) {
-            this.method = method;
-        } else {
-            throw new IllegalArgumentException("Invalid payment method: " + method);
-        }
-    }
-
-    private boolean isCashDataValid(Map<String, String> data) {
-        String address = data.get("address");
-        String fee = data.get("deliveryFee");
-        return address != null && !address.trim().isEmpty() &&
-                fee != null && !fee.trim().isEmpty();
-    }
-
-    private int countDigits(String text) {
-        int count = 0;
-        for (char ch : text.toCharArray()) {
-            if (Character.isDigit(ch)) {
-                count++;
+        if (method == PaymentMethod.CASH) {
+            if (!paymentData.containsKey("address") || !paymentData.containsKey("deliveryFee")) {
+                throw new IllegalArgumentException("Missing address or deliveryFee for CASH method");
+            }
+        } else if (method == PaymentMethod.VOUCHER) {
+            String voucherCode = paymentData.get("VoucherCode");
+            if (voucherCode == null
+                    || voucherCode.length() != 16
+                    || !voucherCode.startsWith("ESHOP")
+                    || voucherCode.replaceAll("[^0-9]", "").length() != 8) {
+                this.status = PaymentStatus.REJECTED;
+            } else {
+                this.status = PaymentStatus.SUCCESS;
             }
         }
-        return count;
+    }
+
+    public Payment(String id, PaymentMethod method, PaymentStatus status, Map<String, String> paymentData) {
+        this(id, method, paymentData);
+        this.setStatus(status);
+    }
+
+    public void setStatus(PaymentStatus status) {
+        if (status == PaymentStatus.SUCCESS || status == PaymentStatus.REJECTED) {
+            this.status = status;
+        } else {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public void setMethod(PaymentMethod method) {
+        if (method == PaymentMethod.VOUCHER || method == PaymentMethod.CASH) {
+            this.method = method;
+        } else {
+            throw new IllegalArgumentException();
+        }
     }
 }
-
-
-
